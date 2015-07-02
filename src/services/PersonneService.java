@@ -2,10 +2,13 @@ package services;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+
+import com.google.gson.Gson;
 
 import DAL.PersonneDac;
 import domaine.Personne;
@@ -91,7 +94,8 @@ public class PersonneService {
 		personneDac.MettreAJour(personne);
 	}
 
-	public void MettreDate(String date, Personne personne) throws ParseException {
+	public String MettreDate(String date, Personne personne) throws ParseException {
+		Object[] reponse = new Object[3];
 		java.sql.Date dateSQL;
 		if(date.isEmpty()){
 			dateSQL = null;
@@ -99,8 +103,39 @@ public class PersonneService {
 		else{
 			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 			dateSQL = new java.sql.Date(sdf.parse(date).getTime());
-		}	
-		personne.setDateCroissants(dateSQL);
-		PersonneService.GetInstance().MettreAJour(personne);
+		}
+		
+		Calendar cal1 = Calendar.getInstance();
+		Calendar cal2 = Calendar.getInstance();
+		cal1.setTime(dateSQL);
+		cal2.setTime(new Date());
+		
+		reponse[0] = true;
+		
+		if(cal1.after(cal2)){
+			reponse[1] = true;
+		}
+		else{
+			reponse[1] = false;
+			reponse[0] = false;
+		}
+		
+		Personne personneAyantMisSaDateLeMemeJour = PersonneDac.GetInstance().GetPersonneAyantMisSaDateLeMemeJour(dateSQL);
+		
+		if(dateSQL != null && personneAyantMisSaDateLeMemeJour != null && personneAyantMisSaDateLeMemeJour.getId() != personne.getId()){
+			reponse[0] = false;
+			reponse[2] = personneAyantMisSaDateLeMemeJour.getPrenom() + " " + personneAyantMisSaDateLeMemeJour.getNom();
+		}
+		else{
+			reponse[2] = null;
+		}
+		
+		if((boolean)reponse[0] == true){
+			personne.setDateCroissants(dateSQL);
+			PersonneService.GetInstance().MettreAJour(personne);
+		}
+		
+		Gson gson = new Gson();
+		return gson.toJson(reponse);
 	}
 }

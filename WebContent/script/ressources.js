@@ -217,11 +217,18 @@ function btnDate_Onclick(element){
 			request.open("GET", contexte + "/Ajax?action=setDate&date=" + encodeURIComponent(inputDate.value), true);
 			request.onreadystatechange = function (aEvt) {
 				if (request.readyState == 4 && request.status == 200) {
-			    	if(request.responseText == "true"){
+					var data = JSON.parse(request.responseText);
+			    	if(data[0] == true){
 			    	 	document.location.reload(true);
 			   		}
+			    	else if (data[1] == false){
+			    		alert('La date ne peut pas être antérieure à la date du jour.');
+			    	}
+			    	else if (data[2] != null){
+			    		alert(data[2] + ' a déjà posé sa date ce jour là.');
+			    	}
 			    	else{
-			    		alert('Une erreur s\'est produite sur le serveur.');
+			    		alert('Erreur interne au serveur.');
 			    	}
 		  		}
 			};

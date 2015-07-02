@@ -106,8 +106,8 @@ public class ServletAjax extends HttpServlet {
 			response.setCharacterEncoding("UTF-8");
 			String date = request.getParameter("date");
 			try {
-				PersonneService.GetInstance().MettreDate(date,utilisateurCourant);
-				response.getWriter().write("true");
+				String retour = PersonneService.GetInstance().MettreDate(date,utilisateurCourant);
+				response.getWriter().write(retour);
 				response.flushBuffer();
 			} catch (Exception e) {
 				e.printStackTrace();

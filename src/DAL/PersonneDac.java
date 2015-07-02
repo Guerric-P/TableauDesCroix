@@ -185,4 +185,42 @@ public class PersonneDac extends DacBase {
 	    	  }
 	      }	      
 	}
+
+	public Personne GetPersonneAyantMisSaDateLeMemeJour(java.sql.Date dateSQL) {
+		 try
+	      {
+			  Class.forName("com.mysql.jdbc.Driver");
+			  connect = DriverManager.getConnection(new ConfigManager().getParameter("URL"));
+		      // Statements allow to issue SQL queries to the database
+		      // Result set get the result of the SQL query
+		      //resultSet = statement.executeQuery("select * from test.personne");
+		      preparedStatement = connect.prepareStatement("{call ps_GetPersonneAyantMisSaDateLeMemeJour(?)}");
+		      preparedStatement.setDate(1, dateSQL);
+		      boolean hasResults = preparedStatement.execute();
+		      ResultSet resultSet = null;
+		      if (hasResults) {
+		          resultSet = preparedStatement.executeQuery();
+		          if (resultSet.next())
+		        	  return ConvertirPourJava(resultSet.getInt(1), resultSet.getString(2), resultSet.getString(3), resultSet.getString(4), resultSet.getInt(5), resultSet.getBoolean(6), resultSet.getInt(7), resultSet.getDate(8), resultSet.getString(9), resultSet.getString(10), resultSet.getBoolean(11));
+		      }
+		      return null;
+	      }
+	      catch(Exception e)
+	      {
+	    	  TraiterErreur(e);
+	    	  return null;
+	      }
+	      finally
+	      {
+	    	  try{
+		    	  connect.close();
+	    	  }
+	    	  catch(Exception e){
+	    		  
+	    	  }
+	    	  finally{
+	    		  
+	    	  }
+	      }	      
+	}
 }
