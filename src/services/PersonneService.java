@@ -99,6 +99,11 @@ public class PersonneService {
 		java.sql.Date dateSQL;
 		if(date.isEmpty()){
 			dateSQL = null;
+			personne.setDateCroissants(dateSQL);
+			PersonneService.GetInstance().MettreAJour(personne);
+			reponse[0] = true;
+			Gson gson = new Gson();
+			return gson.toJson(reponse);
 		}
 		else{
 			SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
