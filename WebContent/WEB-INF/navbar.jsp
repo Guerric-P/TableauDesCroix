@@ -30,15 +30,3 @@
         </div><!--/.nav-collapse -->
 	</div>
 </nav>
-<script>
-function Deconnexion(){
-	var request = new XMLHttpRequest();
-	request.open("GET", "<%= request.getContextPath() %>/Ajax?action=deconnexion");
-	request.onreadystatechange = function (aEvt) {
-		if (request.readyState == 4 && request.status == 200) {
-			document.location.reload(true);
-  		}
-	};
-	request.send();
-}
-</script>

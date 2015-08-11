@@ -30,6 +30,7 @@ public class ServletLogin extends HttpServlet {
 		String URI = request.getRequestURI().substring(request.getContextPath().length(), request.getRequestURI().length());
 		switch(URI){
 			case "/Login":
+				this.getServletContext().setAttribute("Retry", null);
 				this.getServletContext().getRequestDispatcher("/WEB-INF/login.jsp").forward(request, response);
 				break;
 			case "/403":
@@ -43,7 +44,10 @@ public class ServletLogin extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
+
+		this.getServletContext().setAttribute("Retry", true);
+		this.getServletContext().getRequestDispatcher("/WEB-INF/login.jsp").forward(request, response);
+
 	}
 
 }

@@ -2,11 +2,14 @@ var hidden, visibilityChange;
 var pileNotifications = [];
 
 $(document).ready(function() {
-	$("#inputDate").keyup(function(event){
+	$("#inputDate").keypress(function(event){
 	    if(event.keyCode == 13){
-	        $("#btnDate").click();
+	        event.preventDefault();
+	        var element = document.getElementById('btnDate');
+	        btnDate_Onclick(element);
 	    }
 	});
+
 	Notification.requestPermission(function (permission) {
 
 	      // Quelque soit la réponse de l'utilisateur, nous nous assurons de stocker cette information
@@ -252,4 +255,15 @@ function ValiderDate(date){
     else{
     	return true;
     }
+}
+
+function Deconnexion(){
+	var request = new XMLHttpRequest();
+	request.open("GET", contexte +"/Ajax?action=deconnexion");
+	request.onreadystatechange = function (aEvt) {
+		if (request.readyState == 4 && request.status == 200) {
+			document.location.reload(true);
+  		}
+	};
+	request.send();
 }

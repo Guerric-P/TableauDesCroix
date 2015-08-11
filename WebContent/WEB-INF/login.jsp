@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 
 <head>
@@ -17,7 +18,7 @@ Les logins sont de la même forme que les logins Sopra (ex: gphalippou). Pour la 
     <input type="text" name="j_username" size="25">
     <p><p><strong>Mot de passe : </strong>
     <input type="password" size="15" name="j_password">
-    <p><p>
+    <p style="color: red;"><c:if test='${Retry != null}'>Mauvais login ou mot de passe</c:if><p>
     <input type="submit" value="OK">
     <input type="reset" value="Réinitialiser">
 </form>

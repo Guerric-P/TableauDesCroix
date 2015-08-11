@@ -41,7 +41,7 @@
 					Date croissants :
 					</div>
 					<div class=" col-lg-3 col-sm-3">
-						<input type="text" id="inputDate" disabled="disabled" value="${utilisateurCourant.getDateCroissantsPourIHM() }"/>
+						<input type="text" id="inputDate" disabled="disabled" autocomplete="off" value="${utilisateurCourant.getDateCroissantsPourIHM() }"/>
 					</div>
 					<div class=" col-lg-1 col-sm-1">
 						<button id="btnDate" type="button" class="btn btn-primary" onClick="btnDate_Onclick(this)" >Editer</button>

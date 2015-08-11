@@ -42,9 +42,14 @@ public class Authentification implements LoginModule {
     Callback[] callbacks = new Callback[2];
     callbacks[0] = new NameCallback("login");
     callbacks[1] = new PasswordCallback("password", true);
-
-    try {
-      handler.handle(callbacks);
+    
+      try {
+		handler.handle(callbacks);
+	} catch (IOException e) {
+		throw new LoginException("Authentication failed");
+	} catch (UnsupportedCallbackException e) {
+		throw new LoginException("Authentication failed");
+	}
       String name = ((NameCallback) callbacks[0]).getName();
       String password = String.valueOf(((PasswordCallback) callbacks[1])
           .getPassword());
@@ -55,34 +60,30 @@ public class Authentification implements LoginModule {
 	
 	      if(userPrincipal.getLogin().equals(userPrincipal.getMotDePasse()))
 	      {
-	    	  userPrincipal.setMotDePasse(Cryptage.encrypt(password));
+	    	  try {
+				userPrincipal.setMotDePasse(Cryptage.encrypt(password));
+			} catch (Exception e) {
+				throw new LoginException("Authentication failed");
+			}
 	    	  PersonneService.GetInstance().MettreAJour(userPrincipal);
 	    	  CreerRoles(userPrincipal);
 	    	  login = name;
 	    	  return true;
-	      }
-	      else if(userPrincipal.getMotDePasse().equals(Cryptage.encrypt(password)))
-	      {
-	    	  CreerRoles(userPrincipal);
-	    	  login = name;
-	    	  return true;
-	      }
+	      } else
+			try {
+				if(userPrincipal.getMotDePasse().equals(Cryptage.encrypt(password)))
+				  {
+					  CreerRoles(userPrincipal);
+					  login = name;
+					  return true;
+				  }
+			} catch (Exception e) {
+				throw new LoginException("Authentication failed");
+			}
       }
-      return false;
+
       // If credentials are NOT OK we throw a LoginException
-      //throw new LoginException("Authentication failed");
-
-    } catch (IOException e) {
-      throw new LoginException(e.getMessage());
-    } catch (UnsupportedCallbackException e) {
-      throw new LoginException(e.getMessage());
-    } catch (Exception e) {
-    	
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-		return false;
-	}
-
+     throw new LoginException("Authentication failed");
   }
 
   @Override
@@ -102,7 +103,7 @@ public class Authentification implements LoginModule {
 
   @Override
   public boolean abort() throws LoginException {
-    return false;
+    return true;
   }
 
   @Override
