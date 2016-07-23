@@ -14,11 +14,16 @@ import javax.security.auth.callback.UnsupportedCallbackException;
 import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import services.PersonneService;
 import domaine.Personne;
 
 public class Authentification implements LoginModule {
 
+  private static final Logger LOG = LogManager.getLogger(Authentification.class);	
+	
   private CallbackHandler handler;
   private Subject subject;
   private Personne userPrincipal;
@@ -46,8 +51,10 @@ public class Authentification implements LoginModule {
       try {
 		handler.handle(callbacks);
 	} catch (IOException e) {
+		LOG.error(e);
 		throw new LoginException("Authentication failed");
 	} catch (UnsupportedCallbackException e) {
+		LOG.error(e);
 		throw new LoginException("Authentication failed");
 	}
       String name = ((NameCallback) callbacks[0]).getName();
@@ -63,6 +70,7 @@ public class Authentification implements LoginModule {
 	    	  try {
 				userPrincipal.setMotDePasse(Cryptage.encrypt(password));
 			} catch (Exception e) {
+				LOG.error(e);
 				throw new LoginException("Authentication failed");
 			}
 	    	  PersonneService.GetInstance().MettreAJour(userPrincipal);
@@ -78,10 +86,11 @@ public class Authentification implements LoginModule {
 					  return true;
 				  }
 			} catch (Exception e) {
+				LOG.error(e);
 				throw new LoginException("Authentication failed");
 			}
       }
-
+      
       // If credentials are NOT OK we throw a LoginException
      throw new LoginException("Authentication failed");
   }
